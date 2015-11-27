@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <carriers>
+            <fedex>
+                <account backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                <password backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                <contract_id backend_model="Magento\Config\Model\Config\Backend\Encrypted" />                           
+                <sandbox_mode>0</sandbox_mode>
+                <production_webservices_url><![CDATA[https://ws.fedex.com:443/web-services/]]></production_webservices_url>
+                <sandbox_webservices_url><![CDATA[https://wsbeta.fedex.com:443/web-services/]]></sandbox_webservices_url>
+                
+                <active>0</active>
+                
+                
+                
+                
+                <handling>0</handling>
+                <model>Magento\Fedex\Model\Carrier</model>
+                
+                <title>Ocourier</title>
+                <specificerrmsg>This shipping method is currently unavailable. If you would like to ship using this shipping method, please contact us.</specificerrmsg>
+                <unit_of_measure>KG</unit_of_measure>
+                <max_package_weight>150</max_package_weight>
+                
+                <is_online>1</is_online>
+            </fedex>
+        </carriers>
+    </default>
+</config>
