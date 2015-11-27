@@ -3,7 +3,7 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Magento\SampleShippingProvider\Model;
+namespace Magento\TMOcourier\Model;
 
 use Magento\Framework\Module\Dir;
 use Magento\Quote\Model\Quote\Address\RateRequest;
@@ -172,8 +172,10 @@ class Carrier extends AbstractCarrierOnline implements \Magento\Shipping\Model\C
     public function collectRates(RateRequest $request){
         $this->_request=$request;
         $city = $request->getOrigCity();
-        $destination = $this->getDestinatonId($city);
+        $destination_id = $this->getDestinatonId($city);
+        $rate = $this->getRateRequest($request,$destination_id);
 
+        return $this->formDataResult($rate);
 
     };
 
