@@ -22,7 +22,7 @@
                 
                 
                 <handling>0</handling>
-                <model>Magento\Fedex\Model\Carrier</model>
+                <model>Magento\TMOcourier\Model\Carrier</model>
                 
                 <title>Ocourier</title>
                 <specificerrmsg>This shipping method is currently unavailable. If you would like to ship using this shipping method, please contact us.</specificerrmsg>

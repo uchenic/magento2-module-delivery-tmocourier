@@ -166,18 +166,38 @@ class Carrier extends AbstractCarrierOnline implements \Magento\Shipping\Model\C
   
     protected function _doShipmentRequest(\Magento\Framework\DataObject $request){
         return 0;
-    };
+    }
    
 
     public function collectRates(RateRequest $request){
+        //$this->_debug(var_dump($request));
         $this->_request=$request;
-        $city = $request->getOrigCity();
-        $destination_id = $this->getDestinatonId($city);
-        $rate = $this->getRateRequest($request,$destination_id);
+        
+        $result = $this->_rateFactory->create();
 
-        return $this->formDataResult($rate);
+        $method = $this->_rateMethodFactory->create();
 
-    };
+        
+
+        $method->setCarrier('tmocourier');
+        $method->setCarrierTitle('Ocourier');
+
+        $method->setMethod('ocourier');
+        $method->setMethodTitle('Self pick');
+
+        
+
+        $method->setPrice(5);
+        $method->setCost(5);
+       
+
+
+       $result->append($method);
+      // $this->_debug(var_dump($result));
+        return $result;
+       
+
+    }
 
     
 
