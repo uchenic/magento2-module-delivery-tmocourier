@@ -25,7 +25,7 @@ class Carrier extends AbstractCarrierOnline implements \Magento\Shipping\Model\C
      *
      * @var string
      */
-    const CODE = 'fedex';
+    const CODE = 'tmocourier';
 
     /**
      * Purpose of rate request
@@ -169,7 +169,13 @@ class Carrier extends AbstractCarrierOnline implements \Magento\Shipping\Model\C
     };
    
 
-    
+    public function collectRates(RateRequest $request){
+        $this->_request=$request;
+        $city = $request->getOrigCity();
+        $destination = $this->getDestinatonId($city);
+
+
+    };
 
     
 

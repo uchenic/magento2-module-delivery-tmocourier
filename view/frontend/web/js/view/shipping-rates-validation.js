@@ -16,12 +16,12 @@ define(
         Component,
         defaultShippingRatesValidator,
         defaultShippingRatesValidationRules,
-        fedexShippingRatesValidator,
-        fedexShippingRatesValidationRules
+        tmocourierShippingRatesValidator,
+        tmocourierShippingRatesValidationRules
     ) {
         "use strict";
-        defaultShippingRatesValidator.registerValidator('fedex', fedexShippingRatesValidator);
-        defaultShippingRatesValidationRules.registerRules('fedex', fedexShippingRatesValidationRules);
+        defaultShippingRatesValidator.registerValidator('tmocourier', tmocourierShippingRatesValidator);
+        defaultShippingRatesValidationRules.registerRules('tmocourier', tmocourierShippingRatesValidationRules);
         return Component;
     }
 );
