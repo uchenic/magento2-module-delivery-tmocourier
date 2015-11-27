@@ -21,8 +21,8 @@
                                                     <item name="children" xsi:type="array">
                                                         <item name="shipping-rates-validation" xsi:type="array">
                                                             <item name="children" xsi:type="array">
-                                                                <item name="fedex-rates-validation" xsi:type="array">
-                                                                    <item name="component" xsi:type="string">Magento_Fedex/js/view/shipping-rates-validation</item>
+                                                                <item name="tmocourier-rates-validation" xsi:type="array">
+                                                                    <item name="component" xsi:type="string">Magento_TMOcourier/js/view/shipping-rates-validation</item>
                                                                 </item>
                                                             </item>
                                                         </item>
