@@ -172,12 +172,18 @@ class Carrier extends AbstractCarrierOnline implements \Magento\Shipping\Model\C
     public function collectRates(RateRequest $request){
         //$this->_debug(var_dump($request));
         $this->_request=$request;
+
+        $city= $this->loadCityNameByPostal($this->_request->getDestPostcode(),$this->_request->getDestCountryId());
+
+        $ammount= $this->getAmmountBycityName($city);
         
         $result = $this->_rateFactory->create();
 
         $method = $this->_rateMethodFactory->create();
 
-        
+        if($ammount===false){
+            return $result;
+        }
 
         $method->setCarrier('tmocourier');
         $method->setCarrierTitle('Ocourier');
@@ -187,8 +193,8 @@ class Carrier extends AbstractCarrierOnline implements \Magento\Shipping\Model\C
 
         
 
-        $method->setPrice(5);
-        $method->setCost(5);
+        $method->setPrice($ammount);
+        $method->setCost($ammount);
        
 
 
@@ -199,7 +205,93 @@ class Carrier extends AbstractCarrierOnline implements \Magento\Shipping\Model\C
 
     }
 
-    
+    protected function loadCityNameByPostal($code,$country)
+    {   try {
+        $url = sprintf('http://www.geopostcodes.com/inc/search.php?t=%s&tp=%s',$code,$country);
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_URL => $url,
+            CURLOPT_USERAGENT => 'sample',
+            CURLOPT_HTTPGET=>True,
+            CURLOPT_COOKIE =>"geopclanguage=en",
+            CURLOPT_HTTPHEADER => array("X-Requested-With: XMLHttpRequest",
+                                        "Accept-Encoding: gzip, deflate",
+                                        "Referer: http://www.geopostcodes.com/Russia",
+                                        "Host: www.geopostcodes.com",
+                                        "Accept: */*" )
+        ));
+        // Send the request & save response to $resp
+        $resp = curl_exec($curl);
+        $resp= gzdecode($resp);
+        curl_close($curl);
+        $myfile = fopen("postal_code_request.txt", "w");
+        $ww= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"
+            \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
+        <html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en-US\" dir=\"ltr\">
+        <head> <meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\"> </head><body>%s</body></html>";
+
+        $qwe=sprintf($ww,$resp);
+        $qwe=preg_replace("#&nbsp;#", '', $qwe);
+
+        $q = new \DOMDocument;
+        $q->loadHTML($qwe);
+        
+        $res = $q->getElementsByTagName('div')->item(0);
+        // var_dump($items);
+        $res->removeChild($res->getElementsByTagName('b')->item(0));
+        $res->removeChild($res->getElementsByTagName('p')->item(0));
+        $city_name=explode('/ ',$res->nodeValue)[1];
+        return $city_name;
+    } catch (Exception $e) {
+        return '';
+    }
+        return '';
+    }
+
+    protected function getAmmountBycityName($city)
+    {   try {
+            $wsdl='';
+            if ($this->getConfigData('sandbox_mode')==0) {
+                $wsdl=$this->getConfigData('production_webservices_url');
+            }else{
+                $wsdl=$this->getConfigData('sandbox_webservices_url');
+            }
+            $soapclient = new \SoapClient($wsdl);
+
+        //Use the functions of the client, the params of the function are in 
+        //the associative array
+        $params = array('login' => $this->getConfigData('account'),
+             'password' => $this->getConfigData('password'),'contractID'=>$this->getConfigData('contract_id'));
+        $flag=0;
+        $response = $soapclient->getDeliveryCities($params);
+        foreach ($response->GetDeliveryCitiesReply->Cities->string as $key => $value) {
+            if ($value==$city) {
+                $flag=1;
+            }
+        }
+        if ($flag==0) {
+            return false;
+        }
+        $params['cityName']=$city;
+        $params['type']='Самовывоз';
+        $variants = $soapclient->GetDeliveryVariantList($params);
+        
+        $variant_id= $variants->GetDeliveryVariantReply->Items->DeliveryVariant->Id;
+
+        unset($params['cityName']);
+        unset($params['type']);
+        $params['deliveryVariantID']=$variant_id;
+        $params['weight']=111;
+        $amm= $soapclient->CalculateTariff($params);
+        return $amm->CalculateTariffReply->Ammount;
+    } catch (Exception $e) {
+        return false;
+    }
+        return false;
+
+    }
 
     /**
      * Get configured Store Shipping Origin

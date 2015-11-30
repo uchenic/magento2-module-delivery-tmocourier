@@ -13,8 +13,8 @@
                 <password backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
                 <contract_id backend_model="Magento\Config\Model\Config\Backend\Encrypted" />                           
                 <sandbox_mode>0</sandbox_mode>
-                <production_webservices_url><![CDATA[https://ws.fedex.com:443/web-services/]]></production_webservices_url>
-                <sandbox_webservices_url><![CDATA[https://wsbeta.fedex.com:443/web-services/]]></sandbox_webservices_url>
+                <production_webservices_url><![CDATA[https://api.ocourier.ru/DeliveryService.asmx?WSDL]]></production_webservices_url>
+                <sandbox_webservices_url><![CDATA[http://api.ocourier.ru/test/DeliveryService.asmx?WSDL]]></sandbox_webservices_url>
                 
                 <active>0</active>
                 
